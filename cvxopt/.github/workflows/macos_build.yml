@@ -1,0 +1,83 @@
+name: macOS build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+#    if: false
+
+    runs-on: macos-latest
+    env:
+      CFLAGS: -target arm64-apple-macos14.0
+      ARCHFLAGS: -arch arm64
+      _PYTHON_HOST_PLATFORM: macosx-14.0-arm64
+      SUITESPARSE_VERSION: 7.8.2
+      SUITESPARSE_SHA256: 996c48c87baaeb5fc04bd85c7e66d3651a56fe749c531c60926d75b4db5d2181
+      DSDP_VERSION: 5.8
+      DSDP_SHA256: 26aa624525a636de272c0b329e2dfd01a0d5b7827f1c1c76f393d71e37dead70
+      CVXOPT_SUITESPARSE_LIB_DIR: /opt/homebrew/lib
+      CVXOPT_SUITESPARSE_INC_DIR: /opt/homebrew/include/suitesparse
+      CVXOPT_DSDP_LIB_DIR: /usr/local/lib
+      CVXOPT_DSDP_INC_DIR: /usr/local/include
+      CVXOPT_BLAS_LIB_DIR: /opt/homebrew/opt/openblas/lib
+      CVXOPT_BLAS_LIB: openblas
+      CVXOPT_LAPACK_LIB: openblas
+      CVXOPT_BUILD_DSDP: 0
+      CVXOPT_BUILD_FFTW: 1
+      CVXOPT_BUILD_GLPK: 1
+      CVXOPT_BUILD_GSL: 1
+
+    strategy:
+      matrix:
+        python-version: ['3.9','3.13']
+        suitesparse: [src, lib]
+        #suitesparse: [lib]
+
+    steps:
+    - name: Checkout source    
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        brew --prefix
+        brew install openblas suite-sparse glpk gsl fftw
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade setuptools setuptools_scm build wheel pytest pytest-cov coveralls 
+
+    - name: Get SuiteSparse source
+      if: ${{ matrix.suitesparse == 'src' }}
+      run: |
+        wget https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/v${SUITESPARSE_VERSION}.tar.gz
+        echo "${SUITESPARSE_SHA256}  v${SUITESPARSE_VERSION}.tar.gz" > SuiteSparse.sha256
+        shasum -a 256 -c SuiteSparse.sha256
+        tar -xf v${SUITESPARSE_VERSION}.tar.gz
+        echo "CVXOPT_SUITESPARSE_SRC_DIR=SuiteSparse-${SUITESPARSE_VERSION}" >> $GITHUB_ENV
+
+    - name: Build DSDP
+      if: ${{ env.CVXOPT_BUILD_DSDP == 1 }}
+      run: |
+        wget http://www.mcs.anl.gov/hs/software/DSDP/DSDP${DSDP_VERSION}.tar.gz
+        echo "${DSDP_SHA256}  DSDP${DSDP_VERSION}.tar.gz" > DSDP.sha256
+        shasum -a 256 -c DSDP.sha256
+        tar -xf DSDP${DSDP_VERSION}.tar.gz
+        cd DSDP${DSDP_VERSION}
+        patch -p1 < ${{github.workspace}}/.github/workflows/dsdp.patch
+        make PREFIX=/usr/local ARCH_FLAGS="$ARCHFLAGS" LAPACKBLAS="-L${CVXOPT_BLAS_LIB_DIR} -l${CVXOPT_LAPACK_LIB} -l${CVXOPT_BLAS_LIB}" IS_OSX=1 DSDPROOT=`pwd` install
+
+    - name: Build/install CVXOPT
+      run: |
+        python -m build --wheel
+        python -m pip install --no-index --find-links=${{github.workspace}}/dist cvxopt
+
+    - name: Test with pytest
+      run: |
+        python -c "from cvxopt import blas,lapack,amd,cholmod,umfpack,glpk,gsl,fftw"
+        pytest --cov=cvxopt tests

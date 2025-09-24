@@ -1,0 +1,52 @@
+This document describes the standard CVXOPT installation procedure. For more
+information, please consult the CVXOPT website <www.cvxopt.org>.
+
+
+Installing a pre-built package
+==============================
+
+Installing via conda
+--------------------
+
+The `conda-forge <http://anaconda.org/conda-forge/cvxopt>`_ channel
+provides pre-built CVXOPT packages for Linux, macOS, and Windows that
+can be installed using `conda <https://conda.io/docs/>`_::
+
+	conda install -c conda-forge cvxopt
+
+These pre-built packages are linked against OpenBLAS and include all  
+optional extensions (DSDP, FFTW, GLPK, and GSL).
+
+
+Installing via pip
+------------------
+
+A pre-built binary wheel package can be installed
+using `pip <https://pip.pypa.io>`_::
+
+	pip install cvxopt
+
+Wheels for Linux:
+
+* are available for Python 3.6+ (x86_64)
+* are linked against OpenBLAS
+* include all optional extensions (DSDP, FFTW, GLPK, and GSL)
+
+Wheels for macOS:
+
+* are available for Python 3.6+ (x86_64 and arm64)
+* are linked against OpenBLAS
+* include all optional extensions (DSDP, FFTW, GLPK, and GSL)
+
+Wheels for Windows:
+
+* are available for Python 3.8+ (x86_64)
+* are linked against OpenBLAS
+* include the optional extension GLPK 
+
+
+Building and installing from source
+===================================
+
+Please consult the CVXOPT website for information about how to build 
+and install CVXOPT from source <https://cvxopt.org/install/index.html>.
