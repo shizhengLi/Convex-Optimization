@@ -151,7 +151,10 @@ def plot_jensen_inequality():
 
     # 选择两点
     x1, x2 = -1, 1
-    y1, y2 = f[np.where(x == x1)[0][0]], f[np.where(x == x2)[0][0]]
+    # 找到最接近的x值的索引
+    idx1 = np.argmin(np.abs(x - x1))
+    idx2 = np.argmin(np.abs(x - x2))
+    y1, y2 = f[idx1], f[idx2]
 
     # 绘制两点
     ax.plot([x1, x2], [y1, y2], 'ro', markersize=10, label='端点')
