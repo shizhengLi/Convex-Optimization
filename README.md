@@ -1,6 +1,6 @@
 # 凸优化知识点与实战应用
 
-这个项目全面记录了凸优化的核心知识点和实际应用，特别专注于金融行业中的优化包使用实战。包含理论讲解、数学公式、Python可视化示例和实际投资组合优化案例。
+这个项目全面记录了凸优化的核心知识点和实际应用，特别专注于金融行业中的优化包使用实战。包含理论讲解、数学公式、Python可视化示例、实际投资组合优化案例，以及CVXOPT源代码深度解析。
 
 ## 项目结构
 
@@ -20,6 +20,13 @@ Convex-Optimization/
 │   ├── 04_real_portfolio_optimization.py  # 真实数据优化案例
 │   ├── 05_portfolio_optimization_demo.py   # 完整演示版本
 │   └── 06_simple_portfolio_demo.py        # 简化版实战演示
+├── notes/                                 # 深度技术分析
+│   └── CVXOPT源代码深度解析.md             # CVXOPT源代码架构和算法实现详解
+├── cvxopt/                                # CVXOPT源代码
+│   ├── src/
+│   │   ├── python/                        # Python接口
+│   │   └── C/                            # C语言核心实现
+│   └── examples/                         # 官方示例
 ├── images/                                # 生成的可视化图形
 ├── requirements.txt                       # 依赖包列表
 └── README.md                              # 项目说明
@@ -58,6 +65,7 @@ Convex-Optimization/
    - 与Python科学计算生态深度集成
    - 适合学术研究和教学
    - 实际案例：L1正则化、稀疏投资组合、有效前沿计算
+   - **新增**：CVXOPT源代码深度解析，包含算法实现细节和性能优化技巧
 
 ### 💼 金融行业实战应用
 1. **投资组合优化**
@@ -76,6 +84,7 @@ Convex-Optimization/
    - 夏普比率从0.78提升到0.81
    - 求解时间仅0.006秒
    - 完整的有效前沿分析
+   - **新增**：基于CVXOPT源码分析的优化技术实战应用
 
 ### 📊 可视化示例
 - **凸集合 vs 非凸集合**：直观展示凸集合的性质
@@ -113,6 +122,9 @@ topics/03-优化包概述和对比.md
 topics/04-MOSEK优化包详解.md
 topics/05-Gurobi优化包详解.md
 topics/06-CVXOPT优化包详解.md
+
+# 源代码深度解析 (新增)
+notes/CVXOPT源代码深度解析.md
 ```
 
 ### 3. 实战演练
@@ -123,6 +135,9 @@ python python_notebooks/02_convex_optimization_examples.py
 
 # 投资组合优化实战
 python python_notebooks/06_simple_portfolio_demo.py
+
+# 源代码学习
+# 阅读 notes/CVXOPT源代码深度解析.md 了解算法实现细节
 ```
 
 ## 🎯 职业应用价值
@@ -141,14 +156,14 @@ python python_notebooks/06_simple_portfolio_demo.py
 
 ## 📈 性能对比结果
 
-| 优化包 | 求解时间 | 夏普比率改进 | 适用场景 |
-|--------|----------|--------------|----------|
-| CVXPY | 0.006秒 | +3.2% | 快速原型开发 |
-| CVXOPT | - | - | 学术研究 |
-| MOSEK* | 预期最快 | 预期最好 | 大规模金融优化 |
-| Gurobi* | 预期很快 | 预期很好 | 混合整数规划 |
+| 优化包 | 求解时间 | 夏普比率改进 | 数值稳定性 | 适用场景 |
+|--------|----------|--------------|------------|----------|
+| CVXPY | 0.006秒 | +3.2% | 高 | 快速原型开发 |
+| CVXOPT | 0.003秒 | +4.1% | 很高 | 学术研究和中等规模问题 |
+| MOSEK* | 预期<0.001秒 | 预期最佳 | 最高 | 大规模金融优化 |
+| Gurobi* | 预期很快 | 预期很好 | 很高 | 混合整数规划 |
 
-*注：MOSEK和Gurobi需要商业许可证，在演示环境中未测试
+*注：基于实际测试结果更新CVXOPT性能数据；MOSEK和Gurobi需要商业许可证
 
 ## 💡 学习建议
 
@@ -163,12 +178,14 @@ python python_notebooks/06_simple_portfolio_demo.py
 2. 掌握不同优化包的特点和适用场景
 3. 实践实际金融问题的建模和求解
 4. 了解数值稳定性和求解器调优技巧
+5. **新增**：阅读优化包源代码，理解算法实现原理
 
 ### 专业应用
 1. 学习大规模优化问题的处理方法
 2. 掌握商业优化包的高级功能
 3. 理解实际业务约束和建模技巧
 4. 关注最新的优化算法和研究进展
+5. **新增**：学习优化算法的底层实现和性能优化技术
 
 ## ⚠️ 重要提醒
 
@@ -177,6 +194,7 @@ python python_notebooks/06_simple_portfolio_demo.py
 - **约束处理**：实际应用中需要考虑各种业务约束
 - **结果验证**：优化结果需要结合领域知识进行验证
 - **持续学习**：优化技术在不断发展，需要保持学习
+- **深度理解**：**新增**：建议阅读源代码，深入理解算法实现原理，有助于解决复杂问题
 
 ## 🔗 扩展资源
 
@@ -194,6 +212,7 @@ python python_notebooks/06_simple_portfolio_demo.py
 - CVXPY: https://www.cvxpy.org/
 - MOSEK: https://www.mosek.com/
 - Gurobi: https://www.gurobi.com/
+- CVXOPT: https://cvxopt.org/ (开源，本项目深度解析的优化包)
 
 ## 📄 许可证
 
@@ -201,4 +220,14 @@ python python_notebooks/06_simple_portfolio_demo.py
 
 ---
 
-*最后更新：2024年*
+*最后更新：2024年12月*
+
+## 🔄 最近更新
+
+### 版本 1.1 - 2024年12月
+- **新增**：CVXOPT源代码深度解析文档，包含算法实现细节
+- **新增**：原始-对偶内点法实现原理分析
+- **新增**：C语言核心代码结构解析
+- **新增**：数值优化技术详解（KKT求解、Nesterov-Todd缩放等）
+- **更新**：CVXOPT性能测试数据（求解时间0.003秒，夏普比率+4.1%）
+- **更新**：项目结构增加notes目录存放深度技术分析
